@@ -9,8 +9,12 @@ Hanami.app.register_provider :http do
   start do
     slice.start :logger
 
+    connect, read, write = slice[:settings].to_h.values_at :http_timeout_connect,
+                                                           :http_timeout_read,
+                                                           :http_timeout_write
+
     http = ConnectionPool::Wrapper.new size: ENV.fetch("HANAMI_MAX_THREADS", 5) do
-      HTTP.timeout(connect: 2, read: 10, write: 10)
+      HTTP.timeout(connect:, read:, write:)
           .use(:auto_inflate)
           .use(logging: {logger: slice[:logger]})
           .headers("User-Agent" => "http.rb/#{HTTP::VERSION} (#{Hanami.app.app_name})")
