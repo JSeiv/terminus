@@ -6,7 +6,7 @@ RSpec.describe Terminus::Views::Parts::Extension do
   subject(:part) { described_class.new value: extension, rendering: Terminus::View.new.rendering }
 
   let :extension do
-    Factory.structs[:extension, kind: "poll", verb: "get", unit: "none"]
+    Factory.structs[:extension, kind: "poll", unit: "none"]
   end
 
   describe "#alpine_tags" do
@@ -92,22 +92,6 @@ RSpec.describe Terminus::Views::Parts::Extension do
     end
   end
 
-  describe "#formatted_headers" do
-    it "answers hash" do
-      allow(extension).to receive(:headers).and_return(
-        "Accept" => "application/json",
-        "Accept-Encoding" => "deflate,gzip"
-      )
-
-      expect(part.formatted_headers).to eq(<<~JSON.strip)
-        {
-          "Accept": "application/json",
-          "Accept-Encoding": "deflate,gzip"
-        }
-      JSON
-    end
-  end
-
   describe "#formatted_start_at" do
     it "answers date and time when existing" do
       expect(part.formatted_start_at).to eq("2025-01-01T00:00:00")
@@ -116,22 +100,6 @@ RSpec.describe Terminus::Views::Parts::Extension do
     it "answers default date and time when missing" do
       allow(extension).to receive(:start_at).and_return(nil)
       expect(part.formatted_start_at).to eq("2025-01-01T00:00:00")
-    end
-  end
-
-  describe "formatted_uris" do
-    it "answers a string with each seperated by a new line" do
-      allow(extension).to receive(:uris).and_return(%w[https://one.io https://two.io])
-
-      expect(part.formatted_uris).to eq(<<~CONTENT.strip)
-        https://one.io
-        https://two.io
-      CONTENT
-    end
-
-    it "answers a string when empty" do
-      allow(extension).to receive(:uris).and_return([])
-      expect(part.formatted_uris).to eq("")
     end
   end
 end

@@ -12,7 +12,6 @@ RSpec.describe Terminus::Aspects::Extensions::Renderers::Poll, :db do
       Factory[
         :extension,
         kind: "poll",
-        uris: ["https://test.io/test.json"],
         template: <<~CONTENT
           <h1>{{extension.label}}</h1>
           {% for item in source_1 %}

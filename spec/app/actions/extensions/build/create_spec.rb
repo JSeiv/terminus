@@ -6,7 +6,7 @@ RSpec.describe Terminus::Actions::Extensions::Build::Create, :db do
   subject(:action) { described_class.new }
 
   describe "#call" do
-    let(:extension) { Factory[:extension, uris: ["https://one.io"]] }
+    let(:extension) { Factory[:extension] }
 
     let :response do
       action.call Rack::MockRequest.env_for(

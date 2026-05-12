@@ -1,11 +1,6 @@
 <fieldset class="row">
   <fieldset class="column">
-    <fieldset class="column"
-              x-data="{
-                kind: '<%= field_for :kind, fields, extension %>',
-                verb: '<%= field_for :verb, fields, extension %>'
-              }">
-
+    <fieldset class="column" x-data="{kind: '<%= field_for :kind, fields, extension %>'}">
       <legend class="legend">Settings</legend>
 
       <%= scope(:form_field, key: :label, errors:).render do %>

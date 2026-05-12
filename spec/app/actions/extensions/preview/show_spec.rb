@@ -9,7 +9,7 @@ RSpec.describe Terminus::Actions::Extensions::Preview::Show, :db do
   let(:result) { "" }
 
   describe "#call" do
-    let(:extension) { Factory[:extension, uris: ["https://one.io"]] }
+    let(:extension) { Factory[:extension] }
 
     let :response do
       action.call Rack::MockRequest.env_for(

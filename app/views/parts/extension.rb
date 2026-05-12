@@ -25,10 +25,6 @@ module Terminus
 
         def formatted_fields = json_formatter.call fields
 
-        def formatted_headers = json_formatter.call headers
-
-        def formatted_uris = uris.join "\n"
-
         def formatted_start_at
           start_at ? start_at.strftime("%Y-%m-%dT%H:%M:%S") : "2025-01-01T00:00:00"
         end

@@ -4,8 +4,6 @@ Factory.define :extension, relation: :extension do |factory|
   factory.sequence(:name) { "extension_#{it}" }
   factory.sequence(:label) { "Extension #{it}" }
   factory.kind "poll"
-  factory.verb "get"
-  factory.uris []
   factory.data Hash.new
   factory.fields []
   factory.start_at Time.utc(2025, 1, 1, 0, 0, 0)
