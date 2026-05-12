@@ -3,5 +3,5 @@
 ROM::SQL.migration do
   up { drop_column :device, :proxy }
 
-  down { add_column :devices, :proxy, :boolean, null: false, default: false }
+  down { add_column :device, :proxy, :boolean, null: false, default: false }
 end
