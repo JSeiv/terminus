@@ -2,7 +2,7 @@ organization:
   label: "Alchemists"
   uri: "https://alchemists.io"
 project:
-  owner: "bkuhlmann"
+  owner: "usetrmnl"
   uri:
     icon: "https://alchemists.io/favicon.ico"
     logo: "%<organization_uri>s/images/projects/%<project_name>s/logo.png"
