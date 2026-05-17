@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "dry/types"
+require "stringio"
+require "tempfile"
 
 module Terminus
   # The custom types.
@@ -13,6 +15,8 @@ module Terminus
                            process_timeout: (Types::Integer | Types::Float).default(10),
                            timeout: (Types::Integer | Types::Float).default(10)
                          )
+
+    File = Instance(IO) | Instance(Tempfile) | Instance(StringIO)
 
     Pathname = Constructor ::Pathname
 

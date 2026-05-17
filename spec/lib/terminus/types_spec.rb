@@ -37,6 +37,34 @@ RSpec.describe Terminus::Types do
     end
   end
 
+  describe "File" do
+    subject(:type) { described_class::File }
+
+    let(:path) { File.new SPEC_ROOT.join("support/fixtures/sensors.json") }
+
+    it "answers valid file" do
+      expect(type.call(path)).to eq(path)
+    end
+
+    it "answers valid tempfile" do
+      path = Tempfile.new
+      expect(type.call(path)).to eq(path)
+    ensure
+      path.close
+      path.unlink
+    end
+
+    it "answers valid String IO" do
+      io = StringIO.new
+      expect(type.call(io)).to eq(io)
+    end
+
+    it "fails when object can't be coerced" do
+      expectation = proc { type.call nil }
+      expect(&expectation).to raise_error(Dry::Types::CoercionError, /nil violates constraints/)
+    end
+  end
+
   describe "Pathname" do
     subject(:type) { described_class::Pathname }
 
