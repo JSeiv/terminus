@@ -47,13 +47,13 @@ module Terminus
       def resolve_model device
         return unless device
 
-        model = device.respond_to?(:model) ? device.model : nil
+        model = device.model if device.respond_to? :model
         return model if model
 
-        model_id = device.respond_to?(:model_id) ? device.model_id : nil
-        return unless model_id
-
-        model_repository.find model_id
+        model_id = device.model_id if device.respond_to? :model_id
+        model_repository.find model_id if model_id
+      rescue ROM::Struct::MissingAttribute, NoMethodError
+        nil
       end
 
       def search key, value
