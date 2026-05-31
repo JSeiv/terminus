@@ -20,9 +20,12 @@ module Terminus
             "template.html.liquid" => extension.template
           }
 
-          return zipper.call manifest unless home_assistant? extension
+          # rubocop:disable Style/MissingElse
+          if home_assistant? extension
+            manifest["home_assistant.yml"] = home_assistant_configuration_for extension
+          end
+          # rubocop:enable Style/MissingElse
 
-          manifest["home_assistant.yml"] = home_assistant_configuration_for extension
           zipper.call manifest
         end
 
@@ -44,37 +47,35 @@ module Terminus
                              end
         end
 
-        def home_assistant_configuration_for extension
-          config = ha_config_repository.find_by_extension_id extension_id: extension.id
-
-          YAML.dump home_assistant_configuration_payload(config), stringify_names: true
-        end
-
         def home_assistant?(extension) = extension.kind == "home_assistant"
 
-        def home_assistant_configuration_payload config
+        def home_assistant_configuration_for extension
+          config = ha_config_repository.find_by_extension_id extension_id: extension.id
+          return YAML.dump default_home_assistant_payload, stringify_names: true unless config
+
+          YAML.dump home_assistant_payload(config), stringify_names: true
+        end
+
+        def home_assistant_payload config
+          normalize_urls = config.normalize_urls
+
           {
-            source_mode: config_source_mode(config),
-            entity_ids: config_entity_ids(config),
-            endpoint_path: config_endpoint_path(config),
-            attribute_map: config_attribute_map(config),
-            normalize_urls: config_normalize_urls(config)
+            source_mode: config.source_mode || "entity",
+            entity_ids: config.entity_ids || [],
+            endpoint_path: config.endpoint_path,
+            attribute_map: config.attribute_map || {},
+            normalize_urls: normalize_urls.nil? || normalize_urls
           }
         end
 
-        def config_source_mode(config) = config ? config.source_mode : "entity"
-
-        def config_entity_ids(config) = config ? config.entity_ids : []
-
-        def config_endpoint_path(config) = config ? config.endpoint_path : nil
-
-        def config_attribute_map(config) = config ? config.attribute_map : {}
-
-        def config_normalize_urls config
-          return true unless config
-          return true if config.normalize_urls.nil?
-
-          config.normalize_urls
+        def default_home_assistant_payload
+          {
+            source_mode: "entity",
+            entity_ids: [],
+            endpoint_path: nil,
+            attribute_map: {},
+            normalize_urls: true
+          }
         end
       end
     end

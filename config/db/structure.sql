@@ -1084,11 +1084,11 @@ ALTER TABLE ONLY public.firmware
 
 
 --
--- Name: firmware firmwares_version_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: firmware firmwares_version_kind_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.firmware
-    ADD CONSTRAINT firmwares_version_key UNIQUE (version);
+    ADD CONSTRAINT firmwares_version_kind_key UNIQUE (version, kind);
 
 
 --
@@ -1774,5 +1774,6 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260512100558_remove_device_proxy_column.rb'),
 ('20260512102800_remove_extension_poll_columns.rb'),
 ('20260512110409_rename_extension_body_column.rb'),
+('20260601000100_relax_firmware_version_uniqueness.rb'),
 ('20260601143521_add_device_columns.rb'),
 ('20260602112926_add_device_profile_and_compatibility_columns.rb');

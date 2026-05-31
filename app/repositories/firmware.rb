@@ -46,10 +46,14 @@ module Terminus
 
       def resolve_model device
         return unless device
-        return device.model if device.respond_to? :model
-        return unless device.respond_to?(:model_id) && device.model_id
 
-        model_repository.find device.model_id
+        model = device.respond_to?(:model) ? device.model : nil
+        return model if model
+
+        model_id = device.respond_to?(:model_id) ? device.model_id : nil
+        return unless model_id
+
+        model_repository.find model_id
       end
 
       def search key, value

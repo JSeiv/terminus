@@ -107,6 +107,9 @@ detectors:
       - Terminus::Aspects::HomeAssistant::Client#normalized_base_url
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_entity_payload
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant#fetch_entities
+      - Terminus::Aspects::Extensions::Exporter#home_assistant_payload
+      - Terminus::Aspects::Extensions::Importers::Local::Creators::Extension#extract_home_assistant_attributes
+      - Terminus::Repositories::Firmware#resolve_model
   LongParameterList:
     enabled: false
   TooManyInstanceVariables:
@@ -143,6 +146,7 @@ detectors:
       - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
       - Terminus::Actions::Extensions::Update#update
       - Terminus::Aspects::Extensions::Renderer#process
+      - Terminus::Repositories::Firmware#resolve_model
   UtilityFunction:
     exclude:
       - SQLLoggerPatch#log_query
@@ -164,6 +168,10 @@ detectors:
       - Terminus::Actions::Extensions::Sources::Index#build_aliases
       - Terminus::Actions::Extensions::Update#extract_home_assistant_attributes
       - Terminus::Aspects::HomeAssistant::UrlNormalizer#proxied_path?
+      - Terminus::Aspects::Extensions::Exporter#home_assistant?
+      - Terminus::Aspects::Extensions::Exporter#home_assistant_payload
+      - Terminus::Aspects::Extensions::Importers::Local::Creator#merge_home_assistant
+      - Terminus::Aspects::Extensions::Importers::Local::Creators::Extension#extract_normalize_urls
       - build_extension
   DuplicateMethodCall:
     exclude:
@@ -179,6 +187,13 @@ detectors:
       - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
       - Terminus::Aspects::Extensions::Renderers::Static#call
       - Terminus::Aspects::HomeAssistant::Client#build_failure
+      - Terminus::Repositories::Firmware#resolve_model
+  NilCheck:
+    exclude:
+      - Terminus::Aspects::Extensions::Exporter#home_assistant_payload
   RepeatedConditional:
     exclude:
       - Terminus::Views::Parts::Extension
+  ManualDispatch:
+    exclude:
+      - Terminus::Repositories::Firmware#resolve_model
