@@ -34,6 +34,18 @@ RSpec.describe "/api/setup", :db do
     )
   end
 
+  it "answers existing device for MAC address via legacy trailing slash route" do
+    headers["HTTP_ID"] = device.mac_address
+    get "/api/setup/", {}, **headers
+
+    expect(json_payload).to eq(
+      api_key: device.api_key,
+      friendly_id: device.friendly_id,
+      image_url: %(#{settings.api_uri}/assets/setup.bmp),
+      message: "Welcome to Terminus!"
+    )
+  end
+
   it "answers problem details when model for device doesn't exist" do
     get routes.path(:api_setup), {}, **headers
 

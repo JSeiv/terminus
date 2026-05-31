@@ -35,10 +35,31 @@ module Terminus
               attr_reader :schema, :problem
 
               def create attributes
-                repository.create(attributes).tap do |extension|
+                if attributes[:kind] == "home_assistant"
+                  ha_attributes = extract_home_assistant_attributes attributes
+                  repository.create_with_home_assistant attributes, ha_attributes
+                else
+                  repository.create attributes
+                end.tap do |extension|
                   log extension
                   schedule.upsert(*extension.to_schedule)
                 end
+              end
+
+              def extract_home_assistant_attributes attributes
+                {
+                  source_mode: attributes.delete(:home_assistant_source_mode) || "entity",
+                  entity_ids: attributes.delete(:home_assistant_entity_ids) || [],
+                  endpoint_path: attributes.delete(:home_assistant_endpoint_path),
+                  attribute_map: attributes.delete(:home_assistant_attribute_map) || {},
+                  normalize_urls: extract_normalize_urls(attributes)
+                }
+              end
+
+              def extract_normalize_urls attributes
+                return true unless attributes.key? :home_assistant_normalize_urls
+
+                attributes.delete :home_assistant_normalize_urls
               end
 
               def log extension

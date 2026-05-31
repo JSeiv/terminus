@@ -16,6 +16,8 @@ module Terminus
 
       def self.decompress zip
         zip.each.with_object({}) do |entry, attributes|
+          next if entry.directory?
+
           attributes[entry.name] = entry.get_input_stream.read
         end
       end

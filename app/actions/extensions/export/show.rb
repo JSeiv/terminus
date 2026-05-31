@@ -6,8 +6,6 @@ module Terminus
       module Export
         # The show action.
         class Show < Action
-          config.formats.accept :zip
-
           include Deps["aspects.extensions.exporter", repository: "repositories.extension"]
 
           using Refines::Actions::Response

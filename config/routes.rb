@@ -52,6 +52,7 @@ module Terminus
       delete "/screens/:id", to: "api.screens.delete", as: :screen_delete
 
       resource :setup, to: "api.setup", only: :show
+      get "/setup/", to: "api.setup.show", as: :setup_legacy
     end
     # rubocop:enable Metrics/BlockLength
 

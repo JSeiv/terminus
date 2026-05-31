@@ -206,6 +206,8 @@ This fork includes a Home Assistant (HA) overlay designed to stay compatible wit
 
 * Portable extensions remain the default path and should continue to work in upstream Terminus.
 * HA behavior is opt-in via `home_assistant_*` fields and HA-specific rendering/fetch paths.
+* Extension export/import now supports an additional `home_assistant.yml` file for HA-specific metadata (`source_mode`, `entity_ids`, `endpoint_path`, `attribute_map`, `normalize_urls`).
+* Import accepts both flat and folder-prefixed ZIP layouts (for example `configuration.yml` or `my-extension/configuration.yml`).
 * Unknown HA keys should be treated as non-fatal by non-HA environments when possible.
 * Preference is to keep HA changes additive and isolated to reduce upstream rebase conflicts.
 

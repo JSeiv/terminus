@@ -20,7 +20,8 @@ module Terminus
             include Initable[
               key_map: {
                 "configuration.yml" => :configuration,
-                "template.html.liquid" => :template
+                "template.html.liquid" => :template,
+                "home_assistant.yml" => :home_assistant
               }
             ]
             include Dry::Monads[:result]
@@ -49,7 +50,35 @@ module Terminus
             attr_reader :schema, :error_joiner
 
             def transform entries
-              entries.transform_keys!(key_map).then { {**it, **YAML.load(it[:configuration])} }
+              manifest = normalize_manifest entries
+              payload = merge_home_assistant(
+                YAML.load(manifest.fetch(:configuration)),
+                manifest[:home_assistant]
+              )
+
+              {**manifest, **payload}
+            end
+
+            def normalize_manifest entries
+              entries.each_with_object({}) do |(name, content), manifest|
+                key = File.basename name
+                mapped = key_map.fetch key, key.to_sym
+                manifest[mapped] = content
+              end
+            end
+
+            def merge_home_assistant configuration, home_assistant
+              return configuration unless home_assistant
+
+              settings = YAML.load(home_assistant) || {}
+
+              configuration.merge(
+                "home_assistant_source_mode" => settings["source_mode"],
+                "home_assistant_entity_ids" => settings["entity_ids"],
+                "home_assistant_endpoint_path" => settings["endpoint_path"],
+                "home_assistant_attribute_map" => settings["attribute_map"],
+                "home_assistant_normalize_urls" => settings["normalize_urls"]
+              )
             end
 
             def create_exchanges extension, attributes
