@@ -12,13 +12,13 @@ RSpec.describe "Extensions", :db do
     fill_in "extension[label]", with: "Test"
     click_button "Save"
 
-    expect(page).to have_content("must be filled")
+    expect(page).to have_text("must be filled")
 
     fill_in "extension[name]", with: "test"
     click_button "Save"
 
-    expect(page).to have_content("Test")
-    expect(page).to have_content("poll")
+    expect(page).to have_text("Test")
+    expect(page).to have_text("poll")
   end
 
   it "edits", :aggregate_failures, :js do
@@ -29,12 +29,12 @@ RSpec.describe "Extensions", :db do
     fill_in "extension[label]", with: nil
     click_button "Save"
 
-    expect(page).to have_content("must be filled")
+    expect(page).to have_text("must be filled")
 
     fill_in "extension[label]", with: "Edit Test"
     click_button "Save"
 
-    expect(page).to have_content("Changes saved.")
+    expect(page).to have_text("Changes saved.")
     expect(page).to have_field(with: "Edit Test")
   end
 
@@ -44,7 +44,7 @@ RSpec.describe "Extensions", :db do
     visit routes.path(:extension_edit, id: extension.id)
     click_link "Exchanges"
 
-    expect(page).to have_content(exchange.template)
+    expect(page).to have_text(exchange.template)
   end
 
   it "builds", :js do
@@ -53,7 +53,7 @@ RSpec.describe "Extensions", :db do
     visit routes.path(:extension_edit, id: extension.id)
     click_button "Build"
 
-    expect(page).to have_content("Enqueuing...")
+    expect(page).to have_text("Enqueuing...")
   end
 
   it "clones", :aggregate_failures, :js do
@@ -65,17 +65,17 @@ RSpec.describe "Extensions", :db do
     fill_in "extension[label]", with: nil
     click_button "Save"
 
-    expect(page).to have_content("must be filled")
+    expect(page).to have_text("must be filled")
 
     fill_in "extension[label]", with: extension.label
     click_button "Save"
 
-    expect(page).to have_content("must be unique")
+    expect(page).to have_text("must be unique")
 
     fill_in "extension[label]", with: "Clone Test"
     click_button "Save"
 
-    expect(page).to have_content("Clone Test")
+    expect(page).to have_text("Clone Test")
   end
 
   it "deletes", :js do
@@ -86,14 +86,14 @@ RSpec.describe "Extensions", :db do
       accept_prompt { click_button "Delete" }
     end
 
-    expect(page).to have_no_content(extension.label)
+    expect(page).to have_no_text(extension.label)
   end
 
   it "views gallery", :aggregate_failures do
     Hanami.app.start :trmnl_api
     visit routes.path(:extensions_gallery)
 
-    expect(page).to have_content("Gallery")
-    expect(page).to have_content("Welcome to the gallery")
+    expect(page).to have_text("Gallery")
+    expect(page).to have_text("Welcome to the gallery")
   end
 end

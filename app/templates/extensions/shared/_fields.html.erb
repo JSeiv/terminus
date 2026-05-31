@@ -435,19 +435,19 @@
 
       <%= scope(
             :form_field,
-            key: :body,
+            key: :static_body,
             errors:,
             alpine: {show: "kind === 'static'"}
           ).render do %>
 
-        <label class="key" for="extension_body">
+        <label class="key" for="extension_static_body">
           Body
-          <%= render "shared/popovers/triggers/default", name: :body %>
+          <%= render "shared/popovers/triggers/default", name: :static_body %>
         </label>
 
-        <%= form.text_area :body,
-                           field_for(:formatted_body, fields, extension),
-                           id: :extension_body,
+        <%= form.text_area :static_body,
+                           field_for(:formatted_static_body, fields, extension),
+                           id: :extension_static_body,
                            class: "bit-editor",
                            autocomplete: :off,
                            data: {language: :json} %>

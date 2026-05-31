@@ -29,6 +29,7 @@ detectors:
       - Terminus::Aspects::HomeAssistant::Client
       - Terminus::Aspects::HomeAssistant::EntityFetcher
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant
+      - Terminus::Repositories::Extension
   FeatureEnvy:
     exclude:
       - Terminus::Action#authorize
@@ -63,6 +64,8 @@ detectors:
       - Terminus::Actions::Extensions::Gallery::Create#render_schema_error
       - Terminus::Actions::Extensions::Gallery::Index#render_error
       - Terminus::Actions::Extensions::Update#error
+      - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
+      - Terminus::Aspects::Extensions::Renderers::Static#call
       - Terminus::Actions::Firmware::Create#error
       - Terminus::Actions::Firmware::Delete#render
       - Terminus::Actions::Firmware::Update#error
@@ -135,6 +138,11 @@ detectors:
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant#call
       - Terminus::Aspects::HomeAssistant::Client#fetch
       - Terminus::Aspects::HomeAssistant::EndpointFetcher#call
+      - Terminus::Actions::Extensions::Create#save
+      - Terminus::Actions::Extensions::Sources::Index#handle
+      - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
+      - Terminus::Actions::Extensions::Update#update
+      - Terminus::Aspects::Extensions::Renderer#process
   UtilityFunction:
     exclude:
       - SQLLoggerPatch#log_query
@@ -152,6 +160,9 @@ detectors:
       - Terminus::Actions::Settings::HomeAssistant::Update#base_values
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_aliases
       - Terminus::Aspects::HomeAssistant::EndpointFetcher#unsafe_path?
+      - Terminus::Actions::Extensions::Create#extract_home_assistant_attributes
+      - Terminus::Actions::Extensions::Sources::Index#build_aliases
+      - Terminus::Actions::Extensions::Update#extract_home_assistant_attributes
       - Terminus::Aspects::HomeAssistant::UrlNormalizer#proxied_path?
       - build_extension
   DuplicateMethodCall:
@@ -163,4 +174,11 @@ detectors:
       - Terminus::Actions::Settings::HomeAssistant::Test#handle
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_aliases
       - Terminus::Aspects::Extensions::Renderers::HomeAssistant#fetch
+      - Terminus::Actions::Extensions::Sources::Index#build_aliases
+      - Terminus::Actions::Extensions::Sources::Index#handle
+      - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
+      - Terminus::Aspects::Extensions::Renderers::Static#call
       - Terminus::Aspects::HomeAssistant::Client#build_failure
+  RepeatedConditional:
+    exclude:
+      - Terminus::Views::Parts::Extension

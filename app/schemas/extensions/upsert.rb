@@ -19,7 +19,7 @@ module Terminus
         optional(:home_assistant_attribute_map).maybe :hash
         optional(:home_assistant_normalize_urls).filled :bool
         required(:tags).maybe :array
-        optional(:body).maybe :hash
+        required(:static_body).maybe :hash
         required(:template).maybe :string
         optional(:fields).maybe :array
         optional(:data).maybe :hash
@@ -34,7 +34,7 @@ module Terminus
         after(:value_coercer, &Coercers::DefaultToFalse.curry[:last_day_of_month])
         after(:value_coercer, &Coercers::DefaultToTrue.curry[:home_assistant_normalize_urls])
         after(:value_coercer, &Coercers::DefaultToArray.curry[:days])
-        after(:value_coercer, &Coercers::JSONToHash.curry[:body])
+        after(:value_coercer, &Coercers::JSONToHash.curry[:static_body])
         after(:value_coercer, &Coercers::JSONToHash.curry[:fields])
         after(:value_coercer, &Coercers::JSONToHash.curry[:data])
         after(:value_coercer, &Coercers::JSONToHash.curry[:home_assistant_attribute_map])
