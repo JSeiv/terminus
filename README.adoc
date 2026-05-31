@@ -200,6 +200,21 @@ In accordance with the {unbrickable_pledge_link}, the latest version of Terminus
 
 See {doc_extensions_link} documentation for details.
 
+==== Home Assistant Overlay (Fork Note)
+
+This fork includes a Home Assistant (HA) overlay designed to stay compatible with upstream extension import/export while enabling HA-specific behavior.
+
+* Portable extensions remain the default path and should continue to work in upstream Terminus.
+* HA behavior is opt-in via `home_assistant_*` fields and HA-specific rendering/fetch paths.
+* Unknown HA keys should be treated as non-fatal by non-HA environments when possible.
+* Preference is to keep HA changes additive and isolated to reduce upstream rebase conflicts.
+
+When contributing HA extension changes to this fork, prefer:
+
+* Schema additions over schema mutations.
+* Isolated adapters/services over broad shared-template rewrites.
+* Minimal changes to upstream-heavy extension form/render files.
+
 === Jobs
 
 See {doc_jobs_link} documentation for details on {sidekiq_link} worker jobs.
