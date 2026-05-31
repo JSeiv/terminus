@@ -17,7 +17,7 @@ module Terminus
                      .then { "[#{it}]" }
         end
 
-        def formatted_body = json_formatter.call body
+        def formatted_body = json_formatter.call static_body
 
         def formatted_data = json_formatter.call data
 
