@@ -16,6 +16,8 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
         api_key: "secret",
         refresh_rate: 100,
         image_timeout: 0,
+        display_compatibility: "on",
+        display_profile: "default",
         firmware_update: "on",
         firmware_version: "1.2.3",
         battery_charge: 85.0,
@@ -23,6 +25,7 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
         wifi: -75,
         width: 800,
         height: 480,
+        touch_bar: "tap",
         wake_reason: "Awoken from test.",
         sleep_start_at: "18:00:00",
         sleep_end_at: "06:00:00"
@@ -55,6 +58,15 @@ RSpec.describe Terminus::Schemas::Devices::Upsert do
       expect(contract.call(attributes).errors.to_h).to include(
         image_timeout: ["must be greater than or equal to 0"]
       )
+    end
+
+    it "answers true when display compatibility is truthy" do
+      expect(contract.call(attributes).to_h).to include(display_compatibility: true)
+    end
+
+    it "answers false when display compatibility key is missing" do
+      attributes.delete :display_compatibility
+      expect(contract.call(attributes).to_h).to include(display_compatibility: false)
     end
 
     it "answers true when firmware update is truthy" do
