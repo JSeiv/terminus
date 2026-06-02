@@ -38,18 +38,27 @@ curl "https://localhost:2443/api/display" \
 The {trmnl_firmware_link} will include the following headers in each HTTP request. All are optional except for the `ID` header. Here's the full list:
 
 * `ACCESS_TOKEN`: The API key (or an empty string if not present).
+* `BATTERY_CAPACITY`: Ratio of current and max battery capacity. Example: `11300/11420`.
+* `BATTERY_CHARGING`: Boolean for if the battery is charging or not. Example: `0` or `1`.
+* `BATTERY_COUNT`: The number batteries avaiable. Example: `2`.
+* `BATTERY_CURRENT`: The battery current. Can be negative or positive. Example: `115`.
+* `BATTERY_HEALTH`: The battery health. Range: `-1` to `100`.
+* `BATTERY_TEMP`: The battery temperature in Celsius. Range: `-1` to infinity.
 * `BATTERY_VOLTAGE`: The remaining battery level. This is a float (usually 0.0 to 4.1).
 * `FW_VERSION`: The firmware version (i.e. `1.2.3`).
 * `HEIGHT`: :The device height. Example: 480.
 * `HOST`: The host (usually the IP address).
 * `ID`: The MAC address of the device.
+* `IMAGE_CACHED`: Boolean for if the image is cached on the device or not.
 * `MODEL`: The generic device model (doesn't match {trmnl_api_gem_link} model names but can be used as a fuzzy match).
 * `PERCENT_CHARGED`: The remaining charge of the device battery. When present, prefer this value over `BATTERY_VOLTAGE` because this will give you the exact percent of battery charge left.
 * `REFRESH_RATE`: The current refresh rate as saved on the device. Example: 100.
 * `RSSI`: The WiFi signal strength (usually -100 to 100).
 * `SENSORS`: The sensor reasons for any sensors connected to the device.
+* `TEMPERATURE_PROFILE`:
 * `UPDATE_SOURCE`: The reason for why the device was woken from sleep.
-* `USER_AGENT`: The device name (usually the ESP32 board name).
+* `USB_CONNECTED`: Boolean for if the USB power cable is connected or not.
+* `WAKE_TIME`: The number of seconds the device was awake during the last cycle.
 * `WIDTH`: The device width. Example: 800.
 
 The above can be used to update your device settings upon each request.
@@ -250,27 +259,34 @@ curl "https://localhost:2443/api/devices/1" \
   "data": [
     {
       "id": 1,
-      "model_id": 1,
+      "model_id": 11,
       "playlist_id": 1,
       "friendly_id": "DEMO11",
       "label": "Demo",
       "mac_address": "02:A1:B2:C3:D4:E5",
       "api_key": "OScdcN0kFbKjFcid9Kz6Cx",
-      "firmware_version": "1.7.8",
-      "wifi": -71,
+      "firmware_profile": true,
+      "firmware_update": true,
+      "firmware_version": "1.8.5",
+      "wifi": -66,
       "battery_charge": 0.0,
-      "battery_voltage": 4.0,
-      "refresh_rate": 500,
+      "battery_voltage": 3.74,
+      "charging": false,
+      "refresh_rate": 900,
+      "image_cached": true,
       "image_timeout": 0,
-      "wake_reason": null,
+      "wake_reason": "timer",
+      "wake_duration": 2149,
       "width": 800,
       "height": 480,
-      "firmware_update": true,
+      "display_compatibility": false,
+      "display_profile": "default",
+      "touch_bar": "tap",
       "sleep_start_at": "18:00:00",
       "sleep_stop_at": "06:00:00",
-      "created_at": "2026-03-14T14:57:27+00:00",
-      "updated_at": "2026-03-30T21:36:54+00:00",
-      "synced_at": "2026-03-30T21:36:54+00:00"
+      "synced_at": "2026-06-02T16:58:33-06:00",
+      "created_at": "2026-05-17T16:36:58-06:00",
+      "updated_at": "2026-06-02T16:58:33-06:00"
     }
   ]
 }
@@ -279,27 +295,34 @@ curl "https://localhost:2443/api/devices/1" \
 {
   "data": {
     "id": 1,
-    "model_id": 1,
+    "model_id": 11,
     "playlist_id": 1,
     "friendly_id": "DEMO11",
     "label": "Demo",
     "mac_address": "02:A1:B2:C3:D4:E5",
     "api_key": "OScdcN0kFbKjFcid9Kz6Cx",
-    "firmware_version": "1.7.8",
-    "wifi": -71,
+    "firmware_profile": true,
+    "firmware_update": true,
+    "firmware_version": "1.8.5",
+    "wifi": -66,
     "battery_charge": 0.0,
-    "battery_voltage": 4.0,
-    "refresh_rate": 500,
+    "battery_voltage": 3.74,
+    "charging": false,
+    "refresh_rate": 900,
+    "image_cached": true,
     "image_timeout": 0,
-    "wake_reason": null,
+    "wake_reason": "timer",
+    "wake_duration": 2149,
     "width": 800,
     "height": 480,
-    "firmware_update": true,
+    "display_compatibility": false,
+    "display_profile": "default",
+    "touch_bar": "tap",
     "sleep_start_at": "18:00:00",
     "sleep_stop_at": "06:00:00",
-    "created_at": "2026-03-14T14:57:27+00:00",
-    "updated_at": "2026-03-30T21:36:54+00:00",
-    "synced_at": "2026-03-30T21:36:54+00:00"
+    "synced_at": "2026-06-02T16:58:33-06:00",
+    "created_at": "2026-05-17T16:36:58-06:00",
+    "updated_at": "2026-06-02T16:58:33-06:00"
   }
 }
 ----
@@ -367,27 +390,34 @@ curl -X "POST" "https://localhost:2443/api/devices" \
 {
   "data": {
     "id": 1,
-    "model_id": 1,
+    "model_id": 11,
     "playlist_id": 1,
     "friendly_id": "DEMO11",
     "label": "Demo",
     "mac_address": "02:A1:B2:C3:D4:E5",
     "api_key": "OScdcN0kFbKjFcid9Kz6Cx",
-    "firmware_version": null,
-    "wifi": 0,
-    "battery_charge": 0.0,
-    "battery_voltage": 0.0,
-    "refresh_rate": 900,
-    "image_timeout": 0,
-    "wake_reason": null,
-    "width": 0,
-    "height": 0,
+    "firmware_profile": true,
     "firmware_update": true,
-    "sleep_start_at": null,
-    "sleep_stop_at": null,
-    "created_at": "2026-03-14T14:57:27+00:00",
-    "updated_at": "2026-03-30T21:36:54+00:00",
-    "synced_at": "2026-03-30T21:36:54+00:00"
+    "firmware_version": "1.8.5",
+    "wifi": -66,
+    "battery_charge": 0.0,
+    "battery_voltage": 3.74,
+    "charging": false,
+    "refresh_rate": 900,
+    "image_cached": true,
+    "image_timeout": 0,
+    "wake_reason": "timer",
+    "wake_duration": 2149,
+    "width": 800,
+    "height": 480,
+    "display_compatibility": false,
+    "display_profile": "default",
+    "touch_bar": "tap",
+    "sleep_start_at": "18:00:00",
+    "sleep_stop_at": "06:00:00",
+    "synced_at": "2026-06-02T16:58:33-06:00",
+    "created_at": "2026-05-17T16:36:58-06:00",
+    "updated_at": "2026-06-02T16:58:33-06:00"
   }
 }
 ----
@@ -421,27 +451,34 @@ You can change a single attribute or multiple attributes at once. All attributes
 {
   "data": {
     "id": 1,
-    "model_id": 1,
+    "model_id": 11,
     "playlist_id": 1,
     "friendly_id": "DEMO11",
     "label": "Demo",
     "mac_address": "02:A1:B2:C3:D4:E5",
     "api_key": "OScdcN0kFbKjFcid9Kz6Cx",
-    "firmware_version": "1.7.8",
-    "wifi": -71,
+    "firmware_profile": true,
+    "firmware_update": true,
+    "firmware_version": "1.8.5",
+    "wifi": -66,
     "battery_charge": 0.0,
-    "battery_voltage": 4.0,
-    "refresh_rate": 250,
+    "battery_voltage": 3.74,
+    "charging": false,
+    "refresh_rate": 900,
+    "image_cached": true,
     "image_timeout": 0,
-    "wake_reason": null,
+    "wake_reason": "timer",
+    "wake_duration": 2149,
     "width": 800,
     "height": 480,
-    "firmware_update": true,
+    "display_compatibility": false,
+    "display_profile": "default",
+    "touch_bar": "tap",
     "sleep_start_at": "18:00:00",
-    "sleep_stop_at": "06:00:00"
-    "created_at": "2026-03-14T14:57:27+00:00",
-    "updated_at": "2026-03-30T21:36:54+00:00",
-    "synced_at": "2026-03-30T21:36:54+00:00"
+    "sleep_stop_at": "06:00:00",
+    "synced_at": "2026-06-02T16:58:33-06:00",
+    "created_at": "2026-05-17T16:36:58-06:00",
+    "updated_at": "2026-06-02T16:58:33-06:00"
   }
 }
 ----
@@ -467,27 +504,34 @@ curl -X "DELETE" "https://localhost:2443/api/devices/1" \
 {
   "data": {
     "id": 1,
-    "model_id": 1,
+    "model_id": 11,
     "playlist_id": 1,
     "friendly_id": "DEMO11",
     "label": "Demo",
     "mac_address": "02:A1:B2:C3:D4:E5",
     "api_key": "OScdcN0kFbKjFcid9Kz6Cx",
-    "firmware_version": "1.7.8",
-    "wifi": -71,
+    "firmware_profile": true,
+    "firmware_update": true,
+    "firmware_version": "1.8.5",
+    "wifi": -66,
     "battery_charge": 0.0,
-    "battery_voltage": 4.0,
-    "refresh_rate": 250,
+    "battery_voltage": 3.74,
+    "charging": false,
+    "refresh_rate": 900,
+    "image_cached": true,
     "image_timeout": 0,
-    "wake_reason": null,
+    "wake_reason": "timer",
+    "wake_duration": 2149,
     "width": 800,
     "height": 480,
-    "firmware_update": true,
+    "display_compatibility": false,
+    "display_profile": "default",
+    "touch_bar": "tap",
     "sleep_start_at": "18:00:00",
     "sleep_stop_at": "06:00:00",
-    "created_at": "2026-03-14T14:57:27+00:00",
-    "updated_at": "2026-03-30T21:36:54+00:00",
-    "synced_at": "2026-03-30T21:36:54+00:00"
+    "synced_at": "2026-06-02T16:58:33-06:00",
+    "created_at": "2026-05-17T16:36:58-06:00",
+    "updated_at": "2026-06-02T16:58:33-06:00"
   }
 }
 ----
