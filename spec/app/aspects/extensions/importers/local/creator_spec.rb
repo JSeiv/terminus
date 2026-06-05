@@ -62,6 +62,55 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Local::Creator, :db do
       expect(creator.call(io)).to match(Success(kind_of(Terminus::Structs::Extension)))
     end
 
+    context "with Home Assistant configuration" do
+      let :io do
+        manifest = {
+          "configuration.yml" => configuration,
+          "template.html.liquid" => "<h1>Test</h1>",
+          "home_assistant.yml" => <<~HA
+            source_mode: entity
+            entity_ids:
+              - media_player.sonos_roam
+            endpoint_path: /api/states
+            attribute_map:
+              track: attributes.media_title
+            normalize_urls: true
+          HA
+        }
+
+        Terminus::Aspects::Zipper.new.call(manifest).value!
+      end
+
+      let :configuration do
+        <<~CONTENT
+          version: 1.2.3
+          name: test-ha
+          label: Test HA
+          description:
+          mode: dither
+          kind: home_assistant
+          tags: []
+          static_body:
+          fields:
+          data:
+          interval: 2
+          unit: minute
+          days: []
+          last_day_of_month: false
+          start_at: '2025-01-01T00:00:00+00:00'
+          exchanges: []
+        CONTENT
+      end
+
+      it "creates Home Assistant extension config" do
+        relation = Hanami.app["relations.extension_home_assistant_config"]
+        expectation = proc { creator.call io }
+        count = proc { relation.count }
+
+        expect(&expectation).to change(&count).by(1)
+      end
+    end
+
     context "with out exchanges" do
       let :configuration do
         <<~CONTENT

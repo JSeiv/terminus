@@ -10,16 +10,26 @@ detectors:
     exclude:
       - Terminus::Aspects::PasswordEncryptor#call
       - Terminus::Aspects::Playlists::SlideWindow#screens
+      - Terminus::Aspects::HomeAssistant::Client#validate_connection
+      - Terminus::Aspects::HomeAssistant::EndpointFetcher#call
+      - Terminus::Aspects::HomeAssistant::EntityFetcher#fetch_one
+  BooleanParameter:
+    exclude:
+      - Terminus::Aspects::HomeAssistant::Client#call
+      - Terminus::Aspects::HomeAssistant::Client#fetch
+      - Terminus::Aspects::HomeAssistant::EndpointFetcher#call
+      - Terminus::Aspects::HomeAssistant::EntityFetcher#call
   DataClump:
     exclude:
       - Terminus::Actions::API::Base
       - Terminus::Aspects::Croner
-      - Terminus::Aspects::Errors::Problem
+      - Terminus::Aspects::ProblemDetail
       - Terminus::Aspects::Screens::Shoter
       - Terminus::Repositories::Screen
-  DuplicateMethodCall:
-    exclude:
-      - Terminus::Aspects::Devices::Provisioner#create
+      - Terminus::Aspects::HomeAssistant::Client
+      - Terminus::Aspects::HomeAssistant::EntityFetcher
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant
+      - Terminus::Repositories::Extension
   FeatureEnvy:
     exclude:
       - Terminus::Action#authorize
@@ -54,6 +64,8 @@ detectors:
       - Terminus::Actions::Extensions::Gallery::Create#render_schema_error
       - Terminus::Actions::Extensions::Gallery::Index#render_error
       - Terminus::Actions::Extensions::Update#error
+      - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
+      - Terminus::Aspects::Extensions::Renderers::Static#call
       - Terminus::Actions::Firmware::Create#error
       - Terminus::Actions::Firmware::Delete#render
       - Terminus::Actions::Firmware::Update#error
@@ -64,13 +76,13 @@ detectors:
       - Terminus::Actions::Playlists::Screens::Show#view_settings
       - Terminus::Actions::Playlists::Update#error
       - Terminus::Actions::Users::Update#error
-      - Terminus::Aspects::Errors::Problem#enum
       - Terminus::Aspects::Extensions::Cloner#build_attributes
       - Terminus::Aspects::Extensions::Fetchers::Sole#maybe_alter_mime_type
       - Terminus::Aspects::Extensions::Importers::Remote::Extractor#build
       - Terminus::Aspects::Extensions::Importers::Remote::Transformers::Kind#process
       - Terminus::Aspects::Extensions::Renderers::Image#render_multiple
       - Terminus::Aspects::Playlists::ScreenOptioner#call
+      - Terminus::Aspects::ProblemDetail#enum
       - Terminus::Aspects::Screens::Compressor#convert
       - Terminus::Aspects::Screens::Converters::Color#convert
       - Terminus::Aspects::Screens::Converters::Monochrome#as_one_bit
@@ -81,15 +93,23 @@ detectors:
       - Terminus::Aspects::Screens::Converters::Monochrome#convert
       - Terminus::Aspects::Screens::Creators::TempPath#capture_input
       - Terminus::Aspects::Screens::Designer::EventStream#render_preview
-      - Terminus::Aspects::Screens::FindOrCreator#find
       - Terminus::Aspects::Screens::Shoter#save
-      - Terminus::Aspects::Screens::TempPather#capture_input
       - Terminus::Aspects::Screens::Upserters::TempPath#capture_input
       - Terminus::IPFinder#all
       - Terminus::Jobs::Batches::Extension#enqueue_devices
       - Terminus::Jobs::Batches::Extension#enqueue_models
       - Terminus::Repositories::Screen#create_with_image
       - Terminus::Repositories::Screen#update_with_image
+      - Terminus::Actions::HomeAssistant::Entities::Index#matches_term?
+      - Terminus::Actions::HomeAssistant::Entities::Index#scoped_entities
+      - Terminus::Actions::Settings::HomeAssistant::Update#assign_token
+      - Terminus::Structs::HomeAssistantConnection#masked_access_token
+      - Terminus::Aspects::HomeAssistant::Client#normalized_base_url
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_entity_payload
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#fetch_entities
+      - Terminus::Aspects::Extensions::Exporter#home_assistant_payload
+      - Terminus::Aspects::Extensions::Importers::Local::Creators::Extension#extract_home_assistant_attributes
+      - Terminus::Repositories::Firmware#resolve_model
   LongParameterList:
     enabled: false
   TooManyInstanceVariables:
@@ -114,10 +134,66 @@ detectors:
       - Terminus::Providers::Sidekiq#load_schedule
       - Terminus::Views::Parts::Device#battery_voltage_to_percent
       - Terminus::Views::Parts::Device#wifi_percentage
+      - Terminus::Actions::HomeAssistant::Entities::Index#filter
+      - Terminus::Actions::HomeAssistant::Entities::Index#handle
+      - Terminus::Actions::HomeAssistant::Media::Show#handle
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_entity_payload
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#call
+      - Terminus::Aspects::HomeAssistant::Client#fetch
+      - Terminus::Aspects::HomeAssistant::EndpointFetcher#call
+      - Terminus::Actions::Extensions::Create#save
+      - Terminus::Actions::Extensions::Sources::Index#handle
+      - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
+      - Terminus::Actions::Extensions::Update#update
+      - Terminus::Aspects::Extensions::Renderer#process
+      - Terminus::Repositories::Firmware#resolve_model
   UtilityFunction:
     exclude:
       - SQLLoggerPatch#log_query
       - Terminus::Aspects::Croner
-      - Terminus::Aspects::Errors::Problem#duplicate
-      - Terminus::Aspects::Errors::Problem#foreign_key
       - Terminus::Aspects::Liquid::Filters#json
+      - Terminus::Aspects::ProblemDetail#duplicate
+      - Terminus::Aspects::ProblemDetail#foreign_key
+      - Terminus::Actions::HomeAssistant::Entities::Index#render_error
+      - Terminus::Actions::HomeAssistant::Entities::Index#render_payload
+      - Terminus::Actions::HomeAssistant::Entities::Index#simplify
+      - Terminus::Actions::HomeAssistant::Media::Show#bad_gateway
+      - Terminus::Actions::HomeAssistant::Media::Show#bad_request
+      - Terminus::Actions::HomeAssistant::Media::Show#render_upstream
+      - Terminus::Actions::HomeAssistant::Media::Show#safe_path?
+      - Terminus::Actions::Settings::HomeAssistant::Update#base_values
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_aliases
+      - Terminus::Aspects::HomeAssistant::EndpointFetcher#unsafe_path?
+      - Terminus::Actions::Extensions::Create#extract_home_assistant_attributes
+      - Terminus::Actions::Extensions::Sources::Index#build_aliases
+      - Terminus::Actions::Extensions::Update#extract_home_assistant_attributes
+      - Terminus::Aspects::HomeAssistant::UrlNormalizer#proxied_path?
+      - Terminus::Aspects::Extensions::Exporter#home_assistant?
+      - Terminus::Aspects::Extensions::Exporter#home_assistant_payload
+      - Terminus::Aspects::Extensions::Importers::Local::Creator#merge_home_assistant
+      - Terminus::Aspects::Extensions::Importers::Local::Creators::Extension#extract_normalize_urls
+      - build_extension
+  DuplicateMethodCall:
+    exclude:
+      - Terminus::Aspects::Devices::Provisioner#create
+      - Terminus::Actions::HomeAssistant::Entities::Index#handle
+      - Terminus::Actions::HomeAssistant::Entities::Index#simplify
+      - Terminus::Actions::HomeAssistant::Media::Show#render_upstream
+      - Terminus::Actions::Settings::HomeAssistant::Test#handle
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#build_aliases
+      - Terminus::Aspects::Extensions::Renderers::HomeAssistant#fetch
+      - Terminus::Actions::Extensions::Sources::Index#build_aliases
+      - Terminus::Actions::Extensions::Sources::Index#handle
+      - Terminus::Actions::Extensions::Sources::Index#home_assistant_sources
+      - Terminus::Aspects::Extensions::Renderers::Static#call
+      - Terminus::Aspects::HomeAssistant::Client#build_failure
+      - Terminus::Repositories::Firmware#resolve_model
+  NilCheck:
+    exclude:
+      - Terminus::Aspects::Extensions::Exporter#home_assistant_payload
+  RepeatedConditional:
+    exclude:
+      - Terminus::Views::Parts::Extension
+  ManualDispatch:
+    exclude:
+      - Terminus::Repositories::Firmware#resolve_model

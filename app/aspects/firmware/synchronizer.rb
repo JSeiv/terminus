@@ -29,7 +29,7 @@ module Terminus
         def download(payload) = downloader.call payload.url
 
         def attach response, version
-          record = repository.find_by(version:)
+          record = repository.find_by version:, kind: "trmnl"
 
           return Success record if record
 

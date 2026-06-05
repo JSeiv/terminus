@@ -102,6 +102,23 @@ RSpec.describe Terminus::Repositories::Firmware, :db do
     end
   end
 
+  describe "#latest_for" do
+    it "answers model-specific firmware when available" do
+      model = Factory[:model, name: "seeed_e1002", kind: "byod"]
+      device = Factory[:device, model_id: model.id]
+      Factory[:firmware, version: "1.8.5", kind: "byod"]
+      specific = Factory[:firmware, version: "1.8.6", kind: "seeed_e1002"]
+
+      expect(repository.latest_for(device)).to eq(specific)
+    end
+
+    it "falls back to global latest when device model is missing" do
+      latest = Factory[:firmware, version: "9.9.9", kind: "custom"]
+
+      expect(repository.latest_for(nil)).to eq(latest)
+    end
+  end
+
   describe "#search" do
     before { firmware }
 

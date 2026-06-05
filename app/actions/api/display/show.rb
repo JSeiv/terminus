@@ -58,7 +58,7 @@ module Terminus
           end
 
           def fetch_firmware device
-            firmware_repository.latest.then do |firmware|
+            firmware_repository.latest_for(device).then do |firmware|
               break unless firmware
 
               version = firmware.version

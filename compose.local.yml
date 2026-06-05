@@ -1,0 +1,41 @@
+services:
+  init-certificates:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terminus-local:dev
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terminus-local:dev
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: terminus-local:dev
+
+  devcheck:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: terminus-local:devcheck
+    profiles:
+      - tools
+    environment:
+      HANAMI_PORT: ${HANAMI_PORT}
+      API_URI: ${API_URI}
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@database:${DATABASE_PORT}/${DATABASE_NAME}
+      KEYVALUE_URL: redis://:${KEYVALUE_PASSWORD}@keyvalue:${KEYVALUE_PORT}/${KEYVALUE_DATABASE}
+    depends_on:
+      database:
+        condition: service_healthy
+      keyvalue:
+        condition: service_healthy
+    working_dir: /app
+    volumes:
+      - ./:/app

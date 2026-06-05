@@ -24,6 +24,12 @@ module Terminus
               required(:days).maybe :array
               required(:last_day_of_month).filled :bool
               required(:start_at).filled :date_time
+
+              optional(:home_assistant_source_mode).filled :string
+              optional(:home_assistant_entity_ids).maybe :array
+              optional(:home_assistant_endpoint_path).maybe :string
+              optional(:home_assistant_attribute_map).maybe :hash
+              optional(:home_assistant_normalize_urls).filled :bool
             end
           end
         end

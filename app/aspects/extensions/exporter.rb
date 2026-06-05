@@ -10,7 +10,8 @@ module Terminus
         include Deps[
           :settings,
           "aspects.zipper",
-          exchange_repository: "repositories.extension_exchange"
+          exchange_repository: "repositories.extension_exchange",
+          ha_config_repository: "repositories.extension_home_assistant_config"
         ]
 
         def call extension
@@ -18,6 +19,12 @@ module Terminus
             "configuration.yml" => configuration_for(extension),
             "template.html.liquid" => extension.template
           }
+
+          # rubocop:disable Style/MissingElse
+          if home_assistant? extension
+            manifest["home_assistant.yml"] = home_assistant_configuration_for extension
+          end
+          # rubocop:enable Style/MissingElse
 
           zipper.call manifest
         end
@@ -38,6 +45,37 @@ module Terminus
                                  exchanges:
                                }
                              end
+        end
+
+        def home_assistant?(extension) = extension.kind == "home_assistant"
+
+        def home_assistant_configuration_for extension
+          config = ha_config_repository.find_by_extension_id extension_id: extension.id
+          return YAML.dump default_home_assistant_payload, stringify_names: true unless config
+
+          YAML.dump home_assistant_payload(config), stringify_names: true
+        end
+
+        def home_assistant_payload config
+          normalize_urls = config.normalize_urls
+
+          {
+            source_mode: config.source_mode || "entity",
+            entity_ids: config.entity_ids || [],
+            endpoint_path: config.endpoint_path,
+            attribute_map: config.attribute_map || {},
+            normalize_urls: normalize_urls.nil? || normalize_urls
+          }
+        end
+
+        def default_home_assistant_payload
+          {
+            source_mode: "entity",
+            entity_ids: [],
+            endpoint_path: nil,
+            attribute_map: {},
+            normalize_urls: true
+          }
         end
       end
     end

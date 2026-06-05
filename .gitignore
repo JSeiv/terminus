@@ -12,3 +12,9 @@ public/*
 !public/404.html
 !public/500.html
 tmp
+
+# Local fork-ops docs (keep private for now)
+docs/private/
+
+# Local runtime logs
+log/

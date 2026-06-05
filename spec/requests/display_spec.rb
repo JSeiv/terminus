@@ -98,6 +98,36 @@ RSpec.describe "/api/display", :db do
     )
   end
 
+  it "answers model-specific firmware when available" do
+    model = Factory[:model, name: "seeed_e1002", kind: "byod"]
+    provisioner.call(model_id: model.id, mac_address: "A1:B2:C3:D4:E5:F6").value!
+
+    Factory[:firmware, :with_attachment, version: "1.8.5", kind: "trmnl"]
+    Factory[:firmware, :with_attachment, version: "1.8.6", kind: "seeed_e1002"]
+
+    get routes.path(:api_display), {}, **firmware_headers, "HTTP_MODEL" => "seeed_e1002"
+
+    expect(json_payload).to include(
+      firmware_url: "memory://abc123.bin",
+      firmware_version: "1.8.6"
+    )
+  end
+
+  it "falls back to kind firmware when model-specific firmware doesn't exist" do
+    model = Factory[:model, name: "seeed_e1002", kind: "byod"]
+    provisioner.call(model_id: model.id, mac_address: "A1:B2:C3:D4:E5:F6").value!
+
+    Factory[:firmware, :with_attachment, version: "1.8.5", kind: "byod"]
+    Factory[:firmware, :with_attachment, version: "1.8.4", kind: "trmnl"]
+
+    get routes.path(:api_display), {}, **firmware_headers, "HTTP_MODEL" => "seeed_e1002"
+
+    expect(json_payload).to include(
+      firmware_url: "memory://abc123.bin",
+      firmware_version: "1.8.5"
+    )
+  end
+
   context "with invalid/missing headers" do
     before { get routes.path(:api_display) }
 

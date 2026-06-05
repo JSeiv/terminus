@@ -4,7 +4,7 @@ module Terminus
   module Repositories
     # The firmware repository.
     class Firmware < DB::Repository[:firmware]
-      include Deps[:shrine]
+      include Deps[:shrine, model_repository: "repositories.model"]
 
       commands :create
 
@@ -34,6 +34,27 @@ module Terminus
       def find_by(**) = firmware.where(**).one
 
       def latest = all.first
+
+      def latest_for device
+        model = resolve_model device
+        return latest unless model
+
+        kinds = [model.name, model.kind, "terminus"].compact.uniq
+
+        firmware.where(kind: kinds).by_version_desc.first
+      end
+
+      def resolve_model device
+        return unless device
+
+        model = device.model if device.respond_to? :model
+        return model if model
+
+        model_id = device.model_id if device.respond_to? :model_id
+        model_repository.find model_id if model_id
+      rescue ROM::Struct::MissingAttribute, NoMethodError
+        nil
+      end
 
       def search key, value
         firmware.where(Sequel.like(key, "%#{value}%"))

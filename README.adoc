@@ -200,6 +200,40 @@ In accordance with the {unbrickable_pledge_link}, the latest version of Terminus
 
 See {doc_extensions_link} documentation for details.
 
+==== Home Assistant Overlay (Fork Note)
+
+This fork includes a Home Assistant (HA) overlay designed to stay compatible with upstream extension import/export while enabling HA-specific behavior.
+
+* Portable extensions remain the default path and should continue to work in upstream Terminus.
+* HA behavior is opt-in via `home_assistant_*` fields and HA-specific rendering/fetch paths.
+* Extension export/import now supports an additional `home_assistant.yml` file for HA-specific metadata (`source_mode`, `entity_ids`, `endpoint_path`, `attribute_map`, `normalize_urls`).
+* Import accepts both flat and folder-prefixed ZIP layouts (for example `configuration.yml` or `my-extension/configuration.yml`).
+* Unknown HA keys should be treated as non-fatal by non-HA environments when possible.
+* Preference is to keep HA changes additive and isolated to reduce upstream rebase conflicts.
+
+When contributing HA extension changes to this fork, prefer:
+
+* Schema additions over schema mutations.
+* Isolated adapters/services over broad shared-template rewrites.
+* Minimal changes to upstream-heavy extension form/render files.
+
+Quick start for HA overlay users:
+
+. Configure Home Assistant base URL and token in Settings -> Home Assistant.
+. Use the Home Assistant connection test before creating HA-backed extensions.
+. In extensions, use HA-specific fields (`home_assistant_entity_ids`, `home_assistant_attribute_map`) only when needed.
+. Keep shared/public extensions portable by providing non-HA defaults where possible.
+
+Runtime verification (Docker):
+
+[source,bash]
+----
+docker compose -f compose.yml -f compose.local.yml exec -T web \
+  sh -lc "grep -n 'formatted_static_body' app/views/parts/extension.rb"
+----
+
+If the command above returns a line containing `formatted_static_body`, your container is running a build that includes the static body pipeline fixes used by this overlay.
+
 === Jobs
 
 See {doc_jobs_link} documentation for details on {sidekiq_link} worker jobs.

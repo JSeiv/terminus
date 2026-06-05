@@ -50,9 +50,17 @@ RSpec.describe Terminus::Aspects::Firmware::Synchronizer, :db do
       )
     end
 
-    it "answers existing record" do
-      record = Factory[:firmware, version: "1.2.3"]
+    it "answers existing trmnl record" do
+      record = Factory[:firmware, version: "1.2.3", kind: "trmnl"]
       expect(synchronizer.call).to be_success(record)
+    end
+
+    it "creates trmnl record when only other kind exists" do
+      Factory[:firmware, version: "1.2.3", kind: "seeed_e1002"]
+
+      response = synchronizer.call.success
+
+      expect(response).to have_attributes(version: "1.2.3", kind: "trmnl")
     end
 
     context "with attachment errors" do

@@ -22,6 +22,9 @@ RSpec.describe Terminus::Providers::Logger do
     before { allow(cogger).to receive(:new).and_return hub }
 
     it "adds filters" do
+      filters = nil
+      allow(cogger).to receive(:add_filters) { |*captured| filters = captured }
+
       provider = described_class.new(
         environment: :test,
         resolver: proc { cogger },
@@ -31,7 +34,7 @@ RSpec.describe Terminus::Providers::Logger do
       )
 
       provider.start
-      expect(cogger).to have_received(:add_filters).with(any_args)
+      expect(filters).to include(:access_token, :authorization)
     end
 
     context "with test environment" do

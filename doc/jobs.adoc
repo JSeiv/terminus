@@ -8,7 +8,7 @@
 
 All background jobs are handled by the Sidekiq worker service. Most are created via the UI but a few are launched at application boot. The following jobs cache data from our {trmnl_link} server for improved performance and to keep common records in sync:
 
-* *Firmware*: Downloads the latest firmware for automatic device updates. By default, this checks for updates every six hours. In situations where your device updated to a newer Firmware version and it was a bad/broken version, you can revert to and older version by following these steps:
+* *Firmware*: Downloads the latest firmware for automatic device updates. By default, this checks for updates every six hours. For mixed fleets, Terminus prefers firmware by exact model first, then model kind, and finally the generic `terminus` fallback. In situations where your device updated to a newer Firmware version and it was a bad/broken version, you can revert to and older version by following these steps:
 ** Ensure the device you want to downgrade has firmware updates turned on (you'll also want to ensure devices you don't want to downgrade have this setting _turned off_).
 ** Visit the Firmwares page within the UI.
 ** Delete all latest versions until you only have the version you want to downgrade to listed at the top of the list.
