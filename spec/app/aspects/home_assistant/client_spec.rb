@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami_helper"
+require "http"
 
 RSpec.describe Terminus::Aspects::HomeAssistant::Client do
   subject(:client) { described_class.new http: }

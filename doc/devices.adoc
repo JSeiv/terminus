@@ -38,6 +38,20 @@ Terminus supports multiple models (as found via the _Models_ page within the UI)
 
 Great for development purposes especially if you want a quick way to test sensors.
 
+=== reTerminal E1002
+
+Supported as a BYOD model using the `seeed_e1002` model name. During auto-provisioning, firmware headers such as `reTerminal E1002` and `seeed_esp32s3` are normalized to this model.
+
+For mixed fleets, Terminus resolves firmware in this order:
+
+* Exact model match (`seeed_e1002`).
+* Model kind fallback (`byod`).
+* Generic Terminus fallback (`terminus`).
+
+This allows E1002 devices to coexist with TRMNL hardware while receiving model-appropriate firmware when available.
+
+* link:https://www.seeedstudio.com/reTerminal-E1002-p-6304.html[Model]: The product page.
+
 === TRMNL OG (B/W/R/Y)
 
 ⚠️ **Requires Firmware 1.7.6.** Ensure you disable automatic firmware updates once the device is provisioned or you'll be stuck with a loading screen only showing the TRMNL logo in the right hand corner of the screen. You'll probably need to {flash_link} the device before using.
