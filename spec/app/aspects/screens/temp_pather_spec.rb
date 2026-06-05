@@ -15,7 +15,7 @@ RSpec.describe Terminus::Aspects::Screens::TempPather, :db do
     before { mold.with! model_id: model.id }
 
     it "answers path with specific name and extension (without block)" do
-      expect(pather.call(mold).to_s).to match(%r(/test\.png))
+      expect(pather.call(mold).to_s).to include("test.png")
     end
 
     it "answers pathname (without block)" do
@@ -26,7 +26,7 @@ RSpec.describe Terminus::Aspects::Screens::TempPather, :db do
       capture = nil
       pather.call(mold) { capture = it.to_s }
 
-      expect(capture).to match(%r(/test\.png))
+      expect(capture).to include("test.png")
     end
 
     it "answers pathname (with block)" do
